@@ -10,9 +10,9 @@
     <h3>Search a song in all my account playlists - 9ww.github.io</h3>
     <button id="btn">Load Library</button>
     <button id="clear" onclick="localStorage.removeItem('spotify_songs'); location.reload()">Clear Cache</button>
-    Use the browser "Find on page" (Ctrl+F in Windows)
     <div id="status"></div>
     <div id="list"></div>
+    Use the browser "Find on page" (Ctrl+F in Windows)
 
     <script type="module">
         import { SpotifyApi } from 'https://esm.sh/@spotify/web-api-ts-sdk';
@@ -21,7 +21,7 @@
         const btn = document.getElementById("btn");
         const log = (msg) => document.getElementById("status").innerHTML = msg;
         const {id: profileId } = await sdk.currentUser.profile();
-        const isSaveds = 1;
+        let isSaveds = 1;
 
         // 1. The Serial Fetcher (Only runs if Cache is empty)
         async function drainPlaylists() {
