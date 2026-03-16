@@ -43,10 +43,10 @@
                     while (tMore) {
                         let tPage;
                         if(isSaveds === 2) {
-                            tPage = await sdk.currentUser.tracks.savedTracks(100, tOff);
+                            tPage = await sdk.currentUser.tracks.savedTracks(50, tOff);
                         }
                         else {
-                            tPage = await sdk.playlists.getPlaylistItems(p.id, "US", "items(track(name,album(name),artists(name)))", 100, tOff);
+                            tPage = await sdk.playlists.getPlaylistItems(p.id, "US", "items(track(name,album(name),artists(name)))", 50, tOff);
                         }
                         
                         // Flatten and Store
@@ -58,7 +58,7 @@
                         })));
 
                         tMore = tPage.items.length === 100;
-                        tOff += 100;
+                        tOff += 50;
                     }
                 }
                 pMore = !!pPage.next;
