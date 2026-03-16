@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <body>
-    <h3>Spotify Song Search In Playlists - Search A Song In All My Own Playlists - 9ww.github.io</h3>
+    <h3>Search a song in all my account playlists - 9ww.github.io</h3>
     <button id="btn">Load Library</button>
     <button id="clear" onclick="localStorage.removeItem('spotify_songs'); location.reload()">Clear Cache</button>
+    Use the browser "Find on page" (Ctrl+F in Windows)
     <div id="status"></div>
     <div id="list"></div>
 
@@ -22,9 +23,9 @@
             const {id: profileId } = await sdk.currentUser.profile();
 
             while (pMore) {
-                const pPage = await sdk.currentUser.playlists.playlists(50, pOff).filter(p => p.owner.id === profileId);
+                const pPage = await sdk.currentUser.playlists.playlists(50, pOff);
                 
-                for (const p of pPage.items) {
+                for (const p of pPage.items.filter(p => p.owner.id === profileId)) {
                     log(`Scraping: ${p.name}`);
                     let tOff = 0, tMore = true;
                     
