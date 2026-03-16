@@ -1,58 +1,80 @@
 <!DOCTYPE html>
 <body>
-    <button id="btn">Login & Fetch All Songs</button>
+    <button id="btn">Load Library</button>
+    <button id="clear" onclick="localStorage.removeItem('spotify_songs'); location.reload()">Clear Cache</button>
     <div id="status"></div>
     <ul id="list"></ul>
 
     <script type="module">
         import { SpotifyApi } from 'https://esm.sh/@spotify/web-api-ts-sdk';
         
-        // 1. Setup: Replace Client ID. Redirect URI must match Dashboard.
         const sdk = SpotifyApi.withUserAuthorization("YOUR_CLIENT_ID", "http://localhost:8000", ["playlist-read-private"]);
         const btn = document.getElementById("btn");
         const log = (msg) => document.getElementById("status").innerText = msg;
 
-        // 2. The "One-at-a-Time" Engine
+        // 1. The Serial Fetcher (Only runs if Cache is empty)
         async function drainPlaylists() {
-            log("Starting Serial Fetch...");
-            const songs = [];
+            log("Fetching from API...");
+            const db = [];
             let pOff = 0, pMore = true;
 
-            // Outer Loop: Playlists (Batch 50)
             while (pMore) {
                 const pPage = await sdk.currentUser.playlists.playlists(50, pOff);
                 
-                // Serial Loop: Process one playlist completely before starting next
                 for (const p of pPage.items) {
                     log(`Scraping: ${p.name}`);
                     let tOff = 0, tMore = true;
                     
-                    // Inner Loop: Tracks (Batch 100)
                     while (tMore) {
-                        const tPage = await sdk.playlists.getPlaylistItems(p.id, "US", "items(track(name))", 100, tOff);
-                        songs.push(...tPage.items.map(i => i.track ? i.track.name : "Unknown"));
+                        // Fetch Song + Album + Artist
+                        const tPage = await sdk.playlists.getPlaylistItems(p.id, "US", "items(track(name,album(name),artists(name)))", 100, tOff);
                         
-                        // Throttle Logic: Stop if page is not full, else grab next page
+                        // Flatten and Store
+                        db.push(...tPage.items.map(i => ({
+                            pl: p.name,                          // Playlist
+                            t:  i.track?.name || "Unknown",      // Track
+                            ar: i.track?.artists[0]?.name || "", // Artist
+                            al: i.track?.album?.name || ""       // Album
+                        })));
+
                         tMore = tPage.items.length === 100;
                         tOff += 100;
                     }
                 }
-                // Check if more playlists exist
                 pMore = !!pPage.next;
                 pOff += 50;
             }
-            return songs;
+            return db;
         }
 
-        // 3. Execution Logic
+        // 2. Render Helper
+        const render = (data) => {
+            document.getElementById("list").innerHTML = data
+                .map(i => `<li><b>${i.t}</b> by ${i.ar} <small>[${i.al}] in <i>${i.pl}</i></small></li>`)
+                .join('');
+            log(`Loaded ${data.length} songs.`);
+        };
+
+        // 3. Main Execution
         (async () => {
             if (await sdk.getAccessToken()) {
                 btn.onclick = async () => {
-                    const all = await drainPlaylists();
-                    log(`Done! Found ${all.length} songs.`);
-                    document.getElementById("list").innerHTML = all.map(s => `<li>${s}</li>`).join('');
+                    // A. Check Cache First
+                    const cached = localStorage.getItem("spotify_songs");
+                    if (cached) {
+                        log("Found in Cache! Rendering...");
+                        render(JSON.parse(cached));
+                    } else {
+                        // B. If empty, Fetch -> Save -> Render
+                        const data = await drainPlaylists();
+                        try {
+                            localStorage.setItem("spotify_songs", JSON.stringify(data));
+                        } catch (e) { console.warn("Storage Full", e); }
+                        render(data);
+                    }
                 };
-                // Auto-click if returning from Auth
+                
+                // Auto-run on redirect
                 if (new URLSearchParams(location.search).get("code")) {
                     window.history.replaceState({}, null, "/");
                     btn.click();
