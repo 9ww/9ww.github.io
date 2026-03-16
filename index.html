@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <body>
+    <h3>Spotify Song Search In Playlists - Search A Song In All My Own Playlists - 9ww.github.io</h3>
     <button id="btn">Load Library</button>
     <button id="clear" onclick="localStorage.removeItem('spotify_songs'); location.reload()">Clear Cache</button>
     <div id="status"></div>
@@ -80,7 +81,7 @@
                           .map(([artist, playlists]) => ({
                             artist,
                             playlistCount: playlists.size,
-                            playlists: Array.from(playlists)
+                            playlists: [...playlists].join(', ')
                           }))
                         .sort((a, b) => b.playlistCount - a.playlistCount).slice(0, 40);
                         const finalValues = {data, topArtists};
