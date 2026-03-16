@@ -32,7 +32,7 @@
             while (pMore) {
                 const pPage = await sdk.currentUser.playlists.playlists(50, pOff);
                 if(isSaveds === 1) {
-                    pPage.items.push({});
+                    pPage.items.unshift({});
                 }
                 isSaveds++;
                 
