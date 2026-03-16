@@ -31,10 +31,10 @@
                         
                         // Flatten and Store
                         db.push(...tPage.items.map(i => ({
-                            pl: p.name,                          // Playlist
-                            t:  i.track?.name || "Unknown",      // Track
-                            ar: i.track?.artists[0]?.name || "", // Artist
-                            al: i.track?.album?.name || ""       // Album
+                            pl: p.name || "Unknown",
+                            t:  i.track?.name || "Unknown",
+                            ar: i.track?.artists[0]?.name || "Unknown",
+                            al: i.track?.album?.name || "Unknown"
                         })));
 
                         tMore = tPage.items.length === 100;
@@ -48,11 +48,11 @@
         }
 
         // 2. Render Helper
-        const render = (data) => {
-            document.getElementById("list").innerHTML = data
+        const render = (finalValues) => {
+            document.getElementById("list").innerHTML = finalValues.data.
                 .map(i => `<li><b>${i.t}</b> by ${i.ar} <small>[${i.al}] in <i>${i.pl}</i></small></li>`)
                 .join('');
-            log(`Loaded ${data.length} songs.`);
+            log(`Loaded ${finalValues.data.length} songs.`);
         };
 
         // 3. Main Execution
@@ -67,10 +67,25 @@
                     } else {
                         // B. If empty, Fetch -> Save -> Render
                         const data = await drainPlaylists();
+                        const artistGroups = data.reduce((acc, { ar, pl }) => {
+                          if (acc[ar] == null) {
+                              acc[ar] = new Set();
+                          }
+                          acc[ar].add(pl);
+                          return acc;
+                        }, {});
+                        const topArtists = Object.entries(artistGroups)
+                          .map(([artist, playlists]) => ({
+                            artist,
+                            playlistCount: playlists.size,
+                            playlists: Array.from(playlists)
+                          }))
+                        .sort((a, b) => b.playlistCount - a.playlistCount).slice(0, 40);
+                        const finalValues = {data, topArtists};
                         try {
-                            localStorage.setItem("spotify_songs", JSON.stringify(data));
+                            localStorage.setItem("spotify_songs", JSON.stringify(finalValues));
                         } catch (e) { console.warn("Storage Full", e); }
-                        render(data);
+                        render(finalValues);
                     }
                 };
                 
