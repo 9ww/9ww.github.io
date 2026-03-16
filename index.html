@@ -41,8 +41,7 @@
                     let tOff = 0, tMore = true;
                     
                     while (tMore) {
-                        // Fetch Song + Album + Artist
-                        const tPage;
+                        let tPage;
                         if(isSaveds === 2) {
                             tPage = await sdk.currentUser.tracks.savedTracks(100, tOff);
                         }
