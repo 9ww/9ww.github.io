@@ -3,14 +3,14 @@
     <button id="btn">Load Library</button>
     <button id="clear" onclick="localStorage.removeItem('spotify_songs'); location.reload()">Clear Cache</button>
     <div id="status"></div>
-    <ul id="list"></ul>
+    <div id="list"></div>
 
     <script type="module">
         import { SpotifyApi } from 'https://esm.sh/@spotify/web-api-ts-sdk';
         
         const sdk = SpotifyApi.withUserAuthorization("d0ceeb9b9d8045ee8d3edca5ba229eb3", "https://9ww.github.io", ["playlist-read-private"]);
         const btn = document.getElementById("btn");
-        const log = (msg) => document.getElementById("status").innerText = msg;
+        const log = (msg) => document.getElementById("status").innerHTML = msg;
 
         // 1. The Serial Fetcher (Only runs if Cache is empty)
         async function drainPlaylists() {
@@ -52,9 +52,9 @@
         // 2. Render Helper
         const render = (finalValues) => {
             document.getElementById("list").innerHTML = finalValues.data
-                .map(i => `<li><b>${i.t}</b> by ${i.ar} <small>[${i.al}] in <i>${i.pl}</i></small></li>`)
+                .map(i => `<div><b>${i.t}</b> by ${i.ar} <small>[${i.al}] in <i>${i.pl}</i></small></div>`)
                 .join('');
-            log(`Loaded ${finalValues.data.length} songs. ${JSON.stringify(finalValues.topArtists, null, 4)}`);
+            log(`Loaded ${finalValues.data.length} songs. <pre><small>${JSON.stringify(finalValues.topArtists, null, 4)}</small></pre>`);
         };
 
         // 3. Main Execution
