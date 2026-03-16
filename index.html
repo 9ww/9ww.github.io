@@ -16,7 +16,6 @@
 
     <script type="module">
         import { SpotifyApi } from 'https://esm.sh/@spotify/web-api-ts-sdk';
-        
         const sdk = SpotifyApi.withUserAuthorization("d0ceeb9b9d8045ee8d3edca5ba229eb3", "https://9ww.github.io", ["playlist-read-private", "user-library-read"]);
         const btn = document.getElementById("btn");
         const log = (msg) => document.getElementById("status").innerHTML = msg;
@@ -25,24 +24,22 @@
 
         // 1. The Serial Fetcher (Only runs if Cache is empty)
         async function drainPlaylists() {
-            log("Fetching from API...");
             const db = [];
             let pOff = 0, pMore = true;
 
             while (pMore) {
                 const pPage = await sdk.currentUser.playlists.playlists(50, pOff);
                 if(isSaveds === 1) {
-                    pPage.items.unshift({});
+                    pPage.items.unshift({name: "Liked Songs"});
                 }
-                isSaveds++;
                 
-                for (const p of pPage.items.filter(p => p.owner == null || p.owner.id === profileId)) {
+                for (const p of pPage.items.filter(p => p.name === ""Liked Songs"" || p.owner.id === profileId)) {
                     log(`Scraping: ${p.name}`);
                     let tOff = 0, tMore = true;
                     
                     while (tMore) {
                         let tPage;
-                        if(isSaveds === 2) {
+                        if(isSaveds === 1) {
                             tPage = await sdk.currentUser.tracks.savedTracks(50, tOff);
                         }
                         else {
@@ -60,6 +57,7 @@
                         tMore = tPage.items.length === 50;
                         tOff += 50;
                     }
+                    isSaveds++;
                 }
                 pMore = !!pPage.next;
                 pOff += 50;
