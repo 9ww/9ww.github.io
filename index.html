@@ -18,8 +18,10 @@
             const db = [];
             let pOff = 0, pMore = true;
 
+            const {id: profileId } = await sdk.currentUser.profile();
+
             while (pMore) {
-                const pPage = await sdk.currentUser.playlists.playlists(50, pOff);
+                const pPage = await sdk.currentUser.playlists.playlists(50, pOff).filter(p => p.owner.id === profileId);
                 
                 for (const p of pPage.items) {
                     log(`Scraping: ${p.name}`);
