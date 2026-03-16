@@ -1,4 +1,11 @@
 <!DOCTYPE html>
+<style>
+    :root {
+      color-scheme: dark;
+      background: #000000;
+      color: red;
+    }
+</style>
 <body>
     <h3>Search a song in all my account playlists - 9ww.github.io</h3>
     <button id="btn">Load Library</button>
@@ -13,6 +20,8 @@
         const sdk = SpotifyApi.withUserAuthorization("d0ceeb9b9d8045ee8d3edca5ba229eb3", "https://9ww.github.io", ["playlist-read-private"]);
         const btn = document.getElementById("btn");
         const log = (msg) => document.getElementById("status").innerHTML = msg;
+        const {id: profileId } = await sdk.currentUser.profile();
+        const isSaveds = 1;
 
         // 1. The Serial Fetcher (Only runs if Cache is empty)
         async function drainPlaylists() {
@@ -20,18 +29,26 @@
             const db = [];
             let pOff = 0, pMore = true;
 
-            const {id: profileId } = await sdk.currentUser.profile();
-
             while (pMore) {
                 const pPage = await sdk.currentUser.playlists.playlists(50, pOff);
+                if(isSaveds === 1) {
+                    pPage.items.push({});
+                }
+                isSaveds++;
                 
-                for (const p of pPage.items.filter(p => p.owner.id === profileId)) {
+                for (const p of pPage.items.filter(p => p.owner == null || p.owner.id === profileId)) {
                     log(`Scraping: ${p.name}`);
                     let tOff = 0, tMore = true;
                     
                     while (tMore) {
                         // Fetch Song + Album + Artist
-                        const tPage = await sdk.playlists.getPlaylistItems(p.id, "US", "items(track(name,album(name),artists(name)))", 100, tOff);
+                        const tPage;
+                        if(isSaveds === 2) {
+                            tPage = await sdk.currentUser.tracks.savedTracks(100, tOff);
+                        }
+                        else {
+                            tPage = await sdk.playlists.getPlaylistItems(p.id, "US", "items(track(name,album(name),artists(name)))", 100, tOff);
+                        }
                         
                         // Flatten and Store
                         db.push(...tPage.items.map(i => ({
