@@ -49,10 +49,10 @@
 
         // 2. Render Helper
         const render = (finalValues) => {
-            document.getElementById("list").innerHTML = finalValues.data.
+            document.getElementById("list").innerHTML = finalValues.data
                 .map(i => `<li><b>${i.t}</b> by ${i.ar} <small>[${i.al}] in <i>${i.pl}</i></small></li>`)
                 .join('');
-            log(`Loaded ${finalValues.data.length} songs.`);
+            log(`Loaded ${finalValues.data.length} songs. ${JSON.stringify(finalValues.topArtists, null, 4)}`);
         };
 
         // 3. Main Execution
