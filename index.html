@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <style>
     :root {
-      color-scheme: dark;
-      background: black;
-      color: white;
+        color-scheme: dark;
+        background: black;
+        color: white;
     }
 </style>
+
 <body>
     <h3>Search a song in all my account playlists - 9ww.github.io</h3>
     <button id="btn">Load Library</button>
-    <button id="clear" onclick="localStorage.removeItem('spotify_songs'); location.reload()">Clear Cache</button> Suffix the playlist name with $$ to hide it
+    <button id="clear" onclick="localStorage.removeItem('spotify_songs'); location.reload()">Clear Cache</button> Suffix
+    the playlist name with $$ to hide it
     <div id="status"></div>
     <div id="list"></div>
     Use the browser "Find on page" (Ctrl+F in Windows)
@@ -19,7 +21,7 @@
         const sdk = SpotifyApi.withUserAuthorization("d0ceeb9b9d8045ee8d3edca5ba229eb3", "https://9ww.github.io", ["playlist-read-private", "user-library-read"]);
         const btn = document.getElementById("btn");
         const log = (msg) => document.getElementById("status").innerHTML = msg;
-        const {id: profileId } = await sdk.currentUser.profile();
+        const { id: profileId } = await sdk.currentUser.profile();
         let isSaveds = 1;
 
         // 1. The Serial Fetcher (Only runs if Cache is empty)
@@ -29,27 +31,27 @@
 
             while (pMore) {
                 const pPage = await sdk.currentUser.playlists.playlists(50, pOff);
-                if(isSaveds === 1) {
-                    pPage.items.unshift({name: "Liked Songs"});
+                if (isSaveds === 1) {
+                    pPage.items.unshift({ name: "Liked Songs" });
                 }
-                
+
                 for (const p of pPage.items.filter(p => (p.name === "Liked Songs" || p.owner.id === profileId) && p.name.indexOf("$$") < 0)) {
                     log(`Scraping: ${p.name}`);
                     let tOff = 0, tMore = true;
-                    
+
                     while (tMore) {
                         let tPage;
-                        if(isSaveds === 1) {
+                        if (isSaveds === 1) {
                             tPage = await sdk.currentUser.tracks.savedTracks(50, tOff);
                         }
                         else {
                             tPage = await sdk.playlists.getPlaylistItems(p.id, "US", "items(track(name,album(name),artists(name)))", 50, tOff);
                         }
-                        
+
                         // Flatten and Store
                         db.push(...tPage.items.map(i => ({
                             pl: p.name || "Unknown",
-                            t:  i.track?.name || "Unknown",
+                            t: i.track?.name || "Unknown",
                             ar: i.track?.artists[0]?.name || "Unknown",
                             al: i.track?.album?.name || "Unknown"
                         })));
@@ -67,10 +69,34 @@
 
         // 2. Render Helper
         const render = (finalValues) => {
-            document.getElementById("list").innerHTML = finalValues.data
-                .map(i => `<div title="${i.al}">_ <b>${i.t}</b> by ${i.ar} <small>in <i>${i.pl}</i></small></div>`)
-                .join('');
-            log(`Loaded ${finalValues.data.length} songs. <pre><small>${JSON.stringify(finalValues.topArtists, null, 4)}${JSON.stringify(finalValues.songDupes, null, 4)}</small></pre>`);
+            const artistGroups = data.reduce((acc, { ar, pl }) => {
+                if (acc[ar] == null) {
+                    acc[ar] = new Set();
+                }
+                acc[ar].add(pl);
+                return acc;
+            }, {});
+            const topArtists = Object.entries(artistGroups)
+                .map(([artist, playlists]) => ({
+                    artist,
+                    playlistCount: playlists.size,
+                    playlists: [...playlists].join(', ')
+                }))
+                .sort((a, b) => b.playlistCount - a.playlistCount).slice(0, 40).map(({ artist, playlists }) => ({ artist, playlists }));
+
+            const myGroups = data.reduce((acc, { t, ar, pl }) => {
+                if (acc[t] == null) {
+                    acc[t] = { text: t, atEntries: [] };
+                }
+                acc[t].atEntries.push(`By ${ar} <small>in <i>${pl}</i></small>`);
+                return acc;
+            }, {});
+            const songDupes = Object.values(myGroups).filter(x => x.length > 2).map(({ text, atEntries }) => ({ text, entries: atEntries.join(', ') }));
+
+
+            document.getElementById("list").innerHTML = finalValues
+                .map(i => `<div title="${i.al}">_ <b>${i.t}</b> by ${i.ar} <small>in <i>${i.pl}</i></small></div>`).join('');
+            log(`Loaded ${finalValues.data.length} songs. <pre><small>${JSON.stringify(topArtists, null, 4)}${JSON.stringify(songDupes, null, 4)}</small></pre>`);
         };
 
         // 3. Main Execution
@@ -86,38 +112,13 @@
                         // B. If empty, Fetch -> Save -> Render
                         const data = await drainPlaylists();
 
-                        const artistGroups = data.reduce((acc, { ar, pl }) => {
-                          if (acc[ar] == null) {
-                              acc[ar] = new Set();
-                          }
-                          acc[ar].add(pl);
-                          return acc;
-                        }, {});
-                        const topArtists = Object.entries(artistGroups)
-                          .map(([artist, playlists]) => ({
-                            artist,
-                            playlistCount: playlists.size,
-                            playlists: [...playlists].join(', ')
-                          }))
-                        .sort((a, b) => b.playlistCount - a.playlistCount).slice(0, 40).map(({artist, playlists}) => ({artist, playlists}));
-
-                        const myGroups = data.reduce((acc, { t, ar, pl }) => {
-                        if (acc[t] == null) {
-                            acc[t] = { text: t, atEntries: [] };
-                        }
-                        acc[t].atEntries.push(`By ${i.ar} <small>in <i>${i.pl}</i></small>`);
-                        return acc;
-                        }, {});
-                        const songDupes = Object.values(myGroups).filter(x => x.length > 2).map(({text, atEntries}) => ({text, entries: atEntries.join(', ')}));
-
-                        const finalValues = {data, topArtists, songDupes};
                         try {
-                            localStorage.setItem("spotify_songs", JSON.stringify(finalValues));
+                            localStorage.setItem("spotify_songs", JSON.stringify(data));
                         } catch (e) { console.warn("Storage Full", e); }
                         render(finalValues);
                     }
                 };
-                
+
                 // Auto-run on redirect
                 if (new URLSearchParams(location.search).get("code")) {
                     window.history.replaceState({}, null, "/");
