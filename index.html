@@ -96,7 +96,7 @@
 
             document.getElementById("list").innerHTML = finalValues
                 .map(i => `<div title="${i.al}">_ <b>${i.t}</b> by ${i.ar} <small>in <i>${i.pl}</i></small></div>`).join('');
-            log(`Loaded ${finalValues.data.length} songs. <pre><small>${JSON.stringify(topArtists, null, 4)}${JSON.stringify(songDupes, null, 4)}</small></pre>`);
+            log(`Loaded ${finalValues.length} songs. <pre><small>${JSON.stringify(topArtists, null, 4)}${JSON.stringify(songDupes, null, 4)}</small></pre>`);
         };
 
         // 3. Main Execution
@@ -115,7 +115,7 @@
                         try {
                             localStorage.setItem("spotify_songs", JSON.stringify(data));
                         } catch (e) { console.warn("Storage Full", e); }
-                        render(finalValues);
+                        render(data);
                     }
                 };
 
