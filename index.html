@@ -86,14 +86,14 @@
                 .map(({ artist, playlists }) => `<div><b>${artist}</b> <small>in <i>${[...playlists].join(', ')}</i></small></div>`).join('');
 
             const myGroups = finalValues.reduce((acc, { t, ar, pl }) => {
-                const lowTitle = t.toLowerCase();
-                if (acc[lowTitle] == null) {
-                    acc[lowTitle] = { text: t, atEntries: [] };
+                const inKey = t.toLowerCase() + "_" + ar;
+                if (acc[inKey] == null) {
+                    acc[inKey] = { text: t, ar, atEntries: [] };
                 }
-                acc[lowTitle].atEntries.push(`by <b>${ar}</b> <small>in <i>${pl}</i></small>`);
+                acc[inKey].atEntries.push(`<small>in <i>${pl}</i></small>`);
                 return acc;
             }, {});
-            const songDupes = Object.values(myGroups).filter(x => x.atEntries.length > 2).map(({ text, atEntries }) => `<div>${text} ${atEntries.join(', ')}</div>`).join('');
+            const songDupes = Object.values(myGroups).filter(x => x.atEntries.length > 2).map(({ text, ar, atEntries }) => `<div>${text} by <b>${ar}</b> ${atEntries.join(', ')}</div>`).join('');
 
 
             document.getElementById("list").innerHTML = finalValues
