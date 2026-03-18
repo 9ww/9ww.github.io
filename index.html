@@ -93,7 +93,6 @@
                 acc[lowTitle].atEntries.push(`by <b>${ar}</b> <small>in <i>${pl}</i></small>`);
                 return acc;
             }, {});
-            console.log(myGroups);
             const songDupes = Object.values(myGroups).filter(x => x.atEntries.length > 2).map(({ text, atEntries }) => `<div>${text} ${atEntries.join(', ')}</div>`).join('');
 
 
@@ -117,7 +116,7 @@
 
                         try {
                             localStorage.setItem("spotify_songs", JSON.stringify(data));
-                        } catch (e) { console.warn("Storage Full", e); }
+                        } catch (e) { console.warn("Storage error", e); }
                         render(data);
                     }
                 };
