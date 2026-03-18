@@ -80,9 +80,9 @@
                 .map(([artist, playlists]) => ({
                     artist,
                     playlistCount: playlists.size,
-                    playlists: [...playlists].join(', ')
+                    playlists
                 }))
-                .sort((a, b) => b.playlistCount - a.playlistCount).slice(0, 40).map(({ artist, playlists }) => ({ artist, playlists }));
+                .sort((a, b) => b.playlistCount - a.playlistCount).slice(0, 40).map(({ artist, playlists }) => `${artist} in ${[...playlists].join(', ')}`);
 
             const myGroups = finalValues.reduce((acc, { t, ar, pl }) => {
                 if (acc[t] == null) {
@@ -92,7 +92,7 @@
                 return acc;
             }, {});
             console.log(myGroups);
-            const songDupes = Object.values(myGroups).filter(x => x.length > 2).map(({ text, atEntries }) => ({ text, entries: atEntries.join(', ') }));
+            const songDupes = Object.values(myGroups).filter(x => x.atEntries.length > 2).map(({ text, atEntries }) => `${text} ${atEntries.join(', ')}`);
 
 
             document.getElementById("list").innerHTML = finalValues
