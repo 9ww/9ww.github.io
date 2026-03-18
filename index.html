@@ -82,22 +82,23 @@
                     playlistCount: playlists.size,
                     playlists
                 }))
-                .sort((a, b) => b.playlistCount - a.playlistCount).slice(0, 40).map(({ artist, playlists }) => `${artist} in ${[...playlists].join(', ')}`);
+                .sort((a, b) => b.playlistCount - a.playlistCount).slice(0, 40)
+                .map(({ artist, playlists }) => `<div>${artist} <small>in <i>${[...playlists].join(', ')}</i></small></div>`);
 
             const myGroups = finalValues.reduce((acc, { t, ar, pl }) => {
                 if (acc[t] == null) {
                     acc[t] = { text: t, atEntries: [] };
                 }
-                acc[t].atEntries.push(`By ${ar} <small>in <i>${pl}</i></small>`);
+                acc[t].atEntries.push(`by ${ar} <small>in <i>${pl}</i></small>`);
                 return acc;
             }, {});
             console.log(myGroups);
-            const songDupes = Object.values(myGroups).filter(x => x.atEntries.length > 2).map(({ text, atEntries }) => `${text} ${atEntries.join(', ')}`);
+            const songDupes = Object.values(myGroups).filter(x => x.atEntries.length > 2).map(({ text, atEntries }) => `<div>${text} ${atEntries.join(', ')}</div>`);
 
 
             document.getElementById("list").innerHTML = finalValues
                 .map(i => `<div title="${i.al}">_ <b>${i.t}</b> by ${i.ar} <small>in <i>${i.pl}</i></small></div>`).join('');
-            log(`Loaded ${finalValues.length} songs. <pre><small>${JSON.stringify(topArtists, null, 4)}${JSON.stringify(songDupes, null, 4)}</small></pre>`);
+            log(`Loaded ${finalValues.length} songs. ${topArtists}${songDupes}`);
         };
 
         // 3. Main Execution
