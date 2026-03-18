@@ -69,7 +69,7 @@
 
         // 2. Render Helper
         const render = (finalValues) => {
-            const artistGroups = data.reduce((acc, { ar, pl }) => {
+            const artistGroups = finalValues.reduce((acc, { ar, pl }) => {
                 if (acc[ar] == null) {
                     acc[ar] = new Set();
                 }
@@ -84,7 +84,7 @@
                 }))
                 .sort((a, b) => b.playlistCount - a.playlistCount).slice(0, 40).map(({ artist, playlists }) => ({ artist, playlists }));
 
-            const myGroups = data.reduce((acc, { t, ar, pl }) => {
+            const myGroups = finalValues.reduce((acc, { t, ar, pl }) => {
                 if (acc[t] == null) {
                     acc[t] = { text: t, atEntries: [] };
                 }
