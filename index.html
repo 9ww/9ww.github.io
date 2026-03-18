@@ -91,6 +91,7 @@
                 acc[t].atEntries.push(`By ${ar} <small>in <i>${pl}</i></small>`);
                 return acc;
             }, {});
+            console.log(myGroups);
             const songDupes = Object.values(myGroups).filter(x => x.length > 2).map(({ text, atEntries }) => ({ text, entries: atEntries.join(', ') }));
 
 
