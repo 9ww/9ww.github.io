@@ -70,7 +70,7 @@
             document.getElementById("list").innerHTML = finalValues.data
                 .map(i => `<div title="${i.al}">_ <b>${i.t}</b> by ${i.ar} <small>in <i>${i.pl}</i></small></div>`)
                 .join('');
-            log(`Loaded ${finalValues.data.length} songs. <pre><small>${JSON.stringify(finalValues.topArtists, null, 4)}</small></pre>`);
+            log(`Loaded ${finalValues.data.length} songs. <pre><small>${JSON.stringify(finalValues.topArtists, null, 4)}${JSON.stringify(finalValues.songDupes, null, 4)}</small></pre>`);
         };
 
         // 3. Main Execution
