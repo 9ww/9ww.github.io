@@ -86,10 +86,11 @@
                 .map(({ artist, playlists }) => `<div><b>${artist}</b> <small>in <i>${[...playlists].join(', ')}</i></small></div>`).join('');
 
             const myGroups = finalValues.reduce((acc, { t, ar, pl }) => {
-                if (acc[t] == null) {
-                    acc[t] = { text: t, atEntries: [] };
+                const lowTitle = t.toLowerCase();
+                if (acc[lowTitle] == null) {
+                    acc[lowTitle] = { text: t, atEntries: [] };
                 }
-                acc[t].atEntries.push(`by <b>${ar}</b> <small>in <i>${pl}</i></small>`);
+                acc[lowTitle].atEntries.push(`by <b>${ar}</b> <small>in <i>${pl}</i></small>`);
                 return acc;
             }, {});
             console.log(myGroups);
