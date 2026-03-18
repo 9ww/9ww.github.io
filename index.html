@@ -33,7 +33,7 @@
                     pPage.items.unshift({name: "Liked Songs"});
                 }
                 
-                for (const p of pPage.items.filter(p => (p.name === "Liked Songs" || p.owner.id === profileId) && p.name.indexOf("$$") < 0).slice(1, 1)) {
+                for (const p of pPage.items.filter(p => (p.name === "Liked Songs" || p.owner.id === profileId) && p.name.indexOf("$$") < 0)) {
                     log(`Scraping: ${p.name}`);
                     let tOff = 0, tMore = true;
                     
