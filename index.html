@@ -94,9 +94,11 @@
                     const pool = arr.slice(i + 1).filter(x => x.ar === arr[i].ar)
                         .map(x => {
                             const myIndex = x.t.search(/[-[(]/);
-                            return { ...x, atTitle: myIndex > -1 ? x.slice(0, myIndex).trim() : x };
+                            return { ...x, atTitle: myIndex > -1 ? x.t.slice(0, myIndex).trim() : x.t };
                         });
                     const myTitle = arr[i].t;
+
+                    // Removing part of title '- 2029 Remaster'
                     const myIndex = myTitle.search(/[-[(]/);
                     const matches = new Fuse(pool, { keys: ['atTitle'], threshold: 0.3 })
                         .search(myIndex > -1 ? myTitle.slice(0, myIndex).trim() : myTitle);
