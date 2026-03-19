@@ -95,7 +95,7 @@
                     const pool = arr.slice(i + 1).filter(item => item.ar === arr[i].ar);
                     const matches = new Fuse(pool, { keys: ['t'], threshold: 0.5 }).search(arr[i].t);
 
-                    if (matches.length > 1) {
+                    if (matches.length > 0) {
                         res.push({ original: arr[i].t, duplicates: matches.map(m => m.item) });
                     }
                 }
