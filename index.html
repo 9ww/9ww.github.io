@@ -91,13 +91,11 @@
                 const res = [];
 
                 for (let i = 0; i < arr.length && res.length < 10; i++) {
-                    // 1. Filter pool by Artist (ar) to reduce search size
+                    // Filter pool by Artist to reduce search size
                     const pool = arr.slice(i + 1).filter(item => item.ar === arr[i].ar);
-
-                    // 2. Fuzzy search Title (t) only within that pool
                     const matches = new Fuse(pool, { keys: ['t'], threshold: 0.3 }).search(arr[i].t);
 
-                    if (matches.length) {
+                    if (matches.length > 1) {
                         res.push({ original: arr[i].t, duplicates: matches.map(m => m.item) });
                     }
                 }
