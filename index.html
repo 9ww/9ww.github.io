@@ -18,6 +18,7 @@
 
     <script type="module">
         import { SpotifyApi } from 'https://esm.sh/@spotify/web-api-ts-sdk';
+        import Fuse from 'https://cdn.jsdelivr.net';
         const sdk = SpotifyApi.withUserAuthorization("d0ceeb9b9d8045ee8d3edca5ba229eb3", "https://9ww.github.io", ["playlist-read-private", "user-library-read"]);
         const btn = document.getElementById("btn");
         const log = (msg) => document.getElementById("status").innerHTML = msg;
@@ -84,6 +85,26 @@
                 }))
                 .sort((a, b) => b.playlistCount - a.playlistCount).slice(0, 40)
                 .map(({ artist, playlists }) => `<div><b>${artist}</b> <small>in <i>${[...playlists].join(', ')}</i></small></div>`).join('');
+
+
+            const findDupes = (arr) => {
+                const res = [];
+
+                for (let i = 0; i < arr.length && res.length < 10; i++) {
+                    // 1. Filter pool by Artist (ar) to reduce search size
+                    const pool = arr.slice(i + 1).filter(item => item.ar === arr[i].ar);
+
+                    // 2. Fuzzy search Title (t) only within that pool
+                    const matches = new Fuse(pool, { keys: ['t'], threshold: 0.3 }).search(arr[i].t);
+
+                    if (matches.length) {
+                        res.push({ original: arr[i].t, duplicates: matches.map(m => m.item) });
+                    }
+                }
+                return res;
+            };
+            console.log(findDupes(finalValues));
+
 
             const myGroups = finalValues.reduce((acc, { t, ar, pl }) => {
                 const inKey = (t + "_" + ar).toLowerCase();
