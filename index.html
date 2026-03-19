@@ -18,7 +18,7 @@
 
     <script type="module">
         import { SpotifyApi } from 'https://esm.sh/@spotify/web-api-ts-sdk';
-        import Fuse from 'https://cdn.jsdelivr.net';
+        import Fuse from 'https://esm.sh';
         const sdk = SpotifyApi.withUserAuthorization("d0ceeb9b9d8045ee8d3edca5ba229eb3", "https://9ww.github.io", ["playlist-read-private", "user-library-read"]);
         const btn = document.getElementById("btn");
         const log = (msg) => document.getElementById("status").innerHTML = msg;
