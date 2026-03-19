@@ -94,9 +94,12 @@
                     const pool = arr.slice(i + 1).filter(x => x.ar === arr[i].ar)
                         .map(x => {
                             const myIndex = x.t.search(/[-[(]/);
-                            return { ...x, atTitle: myIndex !== -1 ? x.slice(0, myIndex).trim() : x };
+                            return { ...x, atTitle: myIndex > -1 ? x.slice(0, myIndex).trim() : x };
                         });
-                    const matches = new Fuse(pool, { keys: ['atTitle'], threshold: 0.3 }).search(arr[i].t);
+                    const myTitle = arr[i].t;
+                    const myIndex = myTitle.search(/[-[(]/);
+                    const matches = new Fuse(pool, { keys: ['atTitle'], threshold: 0.3 })
+                        .search(myIndex > -1 ? myTitle.slice(0, myIndex).trim() : myTitle);
 
                     if (matches.length > 0) {
                         res.push({ original: arr[i], duplicates: matches.map(m => m.item) });
