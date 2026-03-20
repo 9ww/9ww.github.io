@@ -91,7 +91,7 @@
                 const res = [];
                 for (let i = 0; i < arr.length && res.length < 500; i++) {
                     // Filter pool by Artist to reduce search size
-                    const pool = arr.slice(i + 1).filter(x => x.ar === arr[i].ar)
+                    const pool = arr.slice(i + 1).filter(x => x.ar === arr[i].ar && x.ar != "Coldplay" && x.t != "O")
                         .map(x => {
                             const myIndex = x.t.search(/[-[(]/);
                             return { ...x, atTitle: myIndex > -1 ? x.t.slice(0, myIndex).trim() : x.t };
@@ -112,6 +112,7 @@
             console.log(findDupes(finalValues));
 
 
+            /*TODO
             const myGroups = finalValues.reduce((acc, { t, ar, pl }) => {
                 const inKey = (t + "_" + ar).toLowerCase();
                 if (acc[inKey] == null) {
@@ -122,12 +123,12 @@
             }, {});
             const songDupes = Object.values(myGroups).sort((a, b) => b.atEntries.length - a.atEntries.length)
                 .filter(x => x.atEntries.length > 1)
-                .map(({ t, ar, atEntries }) => `<div>${t} by <b>${ar}</b> ${atEntries.join(', ')}</div>`).join('');
+                .map(({ t, ar, atEntries }) => `<div>${t} by <b>${ar}</b> ${atEntries.join(', ')}</div>`).join('');*/
 
 
             document.getElementById("list").innerHTML = finalValues
                 .map(i => `<div title="${i.al}">_ ${i.t} by <b>${i.ar}</b> <small>in <i>${i.pl}</i></small></div>`).join('');
-            log(`Loaded ${finalValues.length} songs. ${topArtists}${songDupes}`);
+            log(`Loaded ${finalValues.length} songs. ${topArtists}`);
         };
 
         // 3. Main Execution
