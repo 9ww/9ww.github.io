@@ -104,7 +104,9 @@
                         .search(myIndex > -1 ? myTitle.slice(0, myIndex).trim() : myTitle);
 
                     if (matches.length > 0) {
-                        res[[i, ...matches.map(x => x.refIndex)].sort()] = { original: arr[i], duplicates: matches.map(m => m.item) };
+                        const myKey = [i, ...matches.map(x => x.refIndex)];
+                        myKey.sort();
+                        res[myKey] = { original: arr[i], duplicates: matches.map(m => m.item) };
                     }
                 }
                 console.log(res);
