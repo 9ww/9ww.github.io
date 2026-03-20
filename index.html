@@ -25,7 +25,6 @@
         const { id: profileId } = await sdk.currentUser.profile();
         let isSaveds = 1;
 
-        // 1. The Serial Fetcher (Only runs if Cache is empty)
         async function drainPlaylists() {
             const db = [];
             let pOff = 0, pMore = true;
@@ -49,7 +48,6 @@
                             tPage = await sdk.playlists.getPlaylistItems(p.id, "US", "items(track(name,album(name),artists(name)))", 50, tOff);
                         }
 
-                        // Flatten and Store
                         db.push(...tPage.items.map(i => ({
                             pl: p.name || "Unknown",
                             t: i.track?.name || "Unknown",
@@ -68,7 +66,6 @@
             return db;
         }
 
-        // 2. Render Helper
         const render = (finalValues) => {
             const artistGroups = finalValues.reduce((acc, { ar, pl }) => {
                 if (acc[ar] == null) {
@@ -109,7 +106,6 @@
                         res[myKey.sort()] = { original: arr[i], duplicates: matches.map(m => m.item) };
                     }
                 }
-                console.log(res);
                 return Object.values(res).sort((a, b) => a.original.ar.localeCompare(b.original.ar));
             };
             console.log("Dupes", findDupes(finalValues));
