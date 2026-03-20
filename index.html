@@ -106,7 +106,7 @@
                     if (matches.length > 0) {
                         const myKey = [i, ...matches.map(x => x.refIndex)];
                         myKey.sort();
-                        res[myKey] = { original: arr[i], duplicates: matches.map(m => m.item) };
+                        res[myKey.toString()] = { original: arr[i], duplicates: matches.map(m => m.item) };
                     }
                 }
                 console.log(res);
