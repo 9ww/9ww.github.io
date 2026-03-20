@@ -89,8 +89,7 @@
 
             const findDupes = (arr) => {
                 const res = [];
-                // TODO 0 and 40
-                for (let i = 30; i < arr.length && res.length < 70; i++) {
+                for (let i = 0; i < arr.length && res.length < 500; i++) {
                     // Filter pool by Artist to reduce search size
                     const pool = arr.slice(i + 1).filter(x => x.ar === arr[i].ar)
                         .map(x => {
