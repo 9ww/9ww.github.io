@@ -99,7 +99,7 @@
                     const myTitle = arr[i].t;
 
                     // Removing part of title '- 2029 Remaster'
-                    const myIndex = myTitle.search(/[-[(]/);
+                    const myIndex = myTitle.search(/[-[(]|feat/);
                     const matches = new Fuse(pool, { keys: ['atTitle'], threshold: 0.2 }) // TODO 0.3
                         .search(myIndex > -1 ? myTitle.slice(0, myIndex).trim() : myTitle);
 
