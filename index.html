@@ -107,7 +107,7 @@
                         res.push({ original: arr[i], duplicates: matches.map(m => m.item) });
                     }
                 }
-                return res;
+                return res.sort((a, b) => a.original.ar - b.original.ar);
             };
             console.log("Dupes", findDupes(finalValues));
 
