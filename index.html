@@ -109,7 +109,7 @@
                 return Object.values(res).sort((a, b) => a.original.ar.localeCompare(b.original.ar))
                     .map(({ original: o, duplicates }) => {
                         const myDupes = duplicates.map(i => `${i.t} by <b>${i.ar}</b> <small>in <i>${i.pl}</i></small>`);
-                        return `<div>= ${o.t} by <b>${o.ar}</b> <small>in <i>${o.pl}</i></small></b>, ${myDupes.join(', ')}</div>`
+                        return `<div>= ${o.t} by <b>${o.ar}</b> <small>in <i>${o.pl}</i></small></b> 🔄 ${myDupes.join(' 🔄 ')}</div>`
                     }).join('');
             };
 
