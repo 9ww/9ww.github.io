@@ -91,7 +91,7 @@
                 const res = [];
                 for (let i = 0; i < arr.length && res.length < 500; i++) {
                     // Filter pool by Artist to reduce search size
-                    const pool = arr.filter(x => x.ar === arr[i].ar && x.ar != "Coldplay" && x.t != "O")
+                    const pool = arr.filter((_, j) => j !== i).filter(x => x.ar === arr[i].ar && x.ar != "Coldplay" && x.t != "O")
                         .map(x => {
                             const myIndex = x.t.search(/[-[(]/);
                             return { ...x, atTitle: myIndex > -1 ? x.t.slice(0, myIndex).trim() : x.t };
