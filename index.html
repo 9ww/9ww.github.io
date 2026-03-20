@@ -8,7 +8,7 @@
 </style>
 
 <body>
-    <h3>9ww.github.io : Search a song in all my account playlists</h3>
+    <h3>9ww.github.io - Search a song in all my account playlists</h3>
     <button id="btn">Load Library</button>
     <button id="clear" onclick="localStorage.removeItem('spotify_songs'); location.reload()">Clear Cache</button> Suffix
     the playlist name with $$ to hide it
@@ -104,6 +104,7 @@
                         .search(myIndex > -1 ? myTitle.slice(0, myIndex).trim() : myTitle);
 
                     if (matches.length > 0) {
+                        console.log({d:matches.map(x => x.refIndex)});
                         const myKey = [i, ...matches.map(x => x.refIndex)];
                         myKey.sort();
                         res[myKey.toString()] = { original: arr[i], duplicates: matches.map(m => m.item) };
