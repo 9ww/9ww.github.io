@@ -106,28 +106,16 @@
                         res[myKey.sort()] = { original: arr[i], duplicates: matches.map(m => m.item) };
                     }
                 }
-                return Object.values(res).sort((a, b) => a.original.ar.localeCompare(b.original.ar));
+                return Object.values(res).sort((a, b) => a.original.ar.localeCompare(b.original.ar))
+                    .map(({ original: o, duplicates }) => {
+                        const myDupes = duplicates.map(i => `${i.t} by <b>${i.ar}</b> <small>in <i>${i.pl}</i></small>`);
+                        return `<div>= ${o.t} by <b>${o.ar}</b> <small>in <i>${o.pl}</i></small></b> ${myDupes.join(', ')}</div>`
+                    }).join('');
             };
-            console.log("Dupes", findDupes(finalValues));
-
-
-            /*TODO use display format
-            const myGroups = finalValues.reduce((acc, { t, ar, pl }) => {
-                const inKey = (t + "_" + ar).toLowerCase();
-                if (acc[inKey] == null) {
-                    acc[inKey] = { t, ar, atEntries: [] };
-                }
-                acc[inKey].atEntries.push(`<small>in <i>${pl}</i></small>`);
-                return acc;
-            }, {});
-            const songDupes = Object.values(myGroups).sort((a, b) => b.atEntries.length - a.atEntries.length)
-                .filter(x => x.atEntries.length > 1)
-                .map(({ t, ar, atEntries }) => `<div>${t} by <b>${ar}</b> ${atEntries.join(', ')}</div>`).join('');*/
-
 
             document.getElementById("list").innerHTML = finalValues
                 .map(i => `<div title="${i.al}">_ ${i.t} by <b>${i.ar}</b> <small>in <i>${i.pl}</i></small></div>`).join('');
-            log(`Loaded ${finalValues.length} songs. ${topArtists}`);
+            log(`Loaded ${finalValues.length} songs. ${topArtists}${findDupes(finalValues)}`);
         };
 
         // 3. Main Execution
