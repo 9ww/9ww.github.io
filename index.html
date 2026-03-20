@@ -8,7 +8,7 @@
 </style>
 
 <body>
-    <h3>9ww.github.io - Search a song in all my account playlists</h3>
+    <h3>9ww.github.io : Search a song in all my account playlists</h3>
     <button id="btn">Load Library</button>
     <button id="clear" onclick="localStorage.removeItem('spotify_songs'); location.reload()">Clear Cache</button> Suffix
     the playlist name with $$ to hide it
@@ -87,7 +87,8 @@
                 .map(({ artist, playlists }) => `<div><b>${artist}</b> <small>in <i>${[...playlists].join(', ')}</i></small></div>`).join('');
 
 
-            const findDupes = (arr) => {
+            const findDupes = (myValues) => {
+                const arr = myValues.map((x, id) => ({ ...x, id }))
                 const res = {};
                 for (let i = 0; i < arr.length && Object.values(res).length < 500; i++) {
                     // Filter pool by Artist to reduce search size
@@ -104,10 +105,8 @@
                         .search(myIndex > -1 ? myTitle.slice(0, myIndex).trim() : myTitle);
 
                     if (matches.length > 0) {
-                        console.log({d:matches.map(x => x.refIndex)});
-                        const myKey = [i, ...matches.map(x => x.refIndex)];
-                        myKey.sort();
-                        res[myKey.toString()] = { original: arr[i], duplicates: matches.map(m => m.item) };
+                        const myKey = [i, ...matches.map(x => x.item.id)];
+                        res[myKey.sort()] = { original: arr[i], duplicates: matches.map(m => m.item) };
                     }
                 }
                 console.log(res);
@@ -150,7 +149,7 @@
 
                         try {
                             localStorage.setItem("spotify_songs", JSON.stringify(data));
-                        } catch (e) { console.warn("Storage error", e); }
+                        } catch (e) { alert("Storage error", e); }
                         render(data);
                     }
                 };
