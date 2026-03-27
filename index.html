@@ -124,6 +124,7 @@
 
         // 3. Main Execution
         (async () => {
+            await sdk.authenticate();
             const xx = await sdk.getAccessToken();
             console.log({xx});
             if (xx) {
@@ -151,8 +152,6 @@
                     window.history.replaceState({}, null, "/");
                     btn.click();
                 }
-            } else {
-                btn.onclick = () => sdk.authenticate();
             }
         })();
     </script>
