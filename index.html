@@ -16,11 +16,10 @@
 <body>
     <h3>9ww.github.io: Search a song in all my account playlists</h3>
     <button id="btn">Load Library</button>
-    <button id="clear" onclick="localStorage.removeItem('spotify_songs'); location.reload()">Clear Cache</button> Suffix
-    the playlist name with $$ to hide it
+    <button id="clear" onclick="localStorage.removeItem('spotify_songs'); location.reload()">Clear Cache</button> 
     <div id="status"></div>
     <div id="list"></div>
-    Use the browser "Find on page" (Ctrl+F in Windows)
+    Use the browser "Find on page" (Ctrl+F in Windows). Suffix the playlist name with $$ to hide it
 
     <script type="module">
         import { SpotifyApi } from 'https://esm.sh/@spotify/web-api-ts-sdk';
