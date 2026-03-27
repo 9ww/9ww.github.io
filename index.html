@@ -133,7 +133,7 @@
                     const cached = localStorage.getItem("spotify_songs");
                     if (cached) {
                         log("Found in Cache! Rendering...");
-                        render(JSON.parse(cached));
+                        setTimeout(() => render(JSON.parse(cached)), 10);
                     } else {
                         // B. If empty, Fetch -> Save -> Render
                         const data = await drainPlaylists();
