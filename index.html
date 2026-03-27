@@ -125,9 +125,7 @@
         // 3. Main Execution
         (async () => {
             await sdk.authenticate();
-            const xx = await sdk.getAccessToken();
-            console.log({xx});
-            if (xx) {
+            if (await sdk.getAccessToken()) {
                 btn.onclick = async () => {
                     // A. Check Cache First
                     const cached = localStorage.getItem("spotify_songs");
