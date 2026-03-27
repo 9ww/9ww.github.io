@@ -28,13 +28,12 @@
         const sdk = SpotifyApi.withUserAuthorization("d0ceeb9b9d8045ee8d3edca5ba229eb3", "https://9ww.github.io", ["playlist-read-private", "user-library-read"]);
         const btn = document.getElementById("btn");
         const log = (msg) => document.getElementById("status").innerHTML = msg;
-        const { id: profileId } = await sdk.currentUser.profile();
         let isSaveds = 1;
 
         async function drainPlaylists() {
             const db = [];
             let pOff = 0, pMore = true;
-
+            const { id: profileId } = await sdk.currentUser.profile();
             while (pMore) {
                 const pPage = await sdk.currentUser.playlists.playlists(50, pOff);
                 if (isSaveds === 1) {
