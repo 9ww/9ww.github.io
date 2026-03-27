@@ -144,14 +144,6 @@
                         render(data);
                     }
                 };
-
-                // Auto-run on redirect
-                const yy = new URLSearchParams(location.search).get("code");
-                console.log({yy});
-                if (yy) {
-                    window.history.replaceState({}, null, "/");
-                    btn.click();
-                }
             }
         })();
     </script>
