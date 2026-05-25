@@ -95,15 +95,19 @@
                     // Filter pool by Artist to reduce search size
                     const pool = arr.filter((_, j) => j !== i).filter(x => x.ar === arr[i].ar && x.ar != "Coldplay" && x.t != "O")
                         .map(x => {
-                            const myIndex = x.t.search(/[-[(]/);
+                            const myIndex = x.t.search(/[-[(]|feat/);
                             return { ...x, atTitle: myIndex > -1 ? x.t.slice(0, myIndex).trim() : x.t };
                         });
                     const myTitle = arr[i].t;
 
                     // Removing part of title '- 2029 Remaster'
                     const myIndex = myTitle.search(/[-[(]|feat/);
+                    const theTitle = myIndex > -1 ? myTitle.slice(0, myIndex).trim() : myTitle;
+                    if(theTitle.length <= 1) {
+                        continue;
+                    }
                     const matches = new Fuse(pool, { keys: ['atTitle'], threshold: 0.2 }) // TODO 0.3
-                        .search(myIndex > -1 ? myTitle.slice(0, myIndex).trim() : myTitle);
+                        .search(theTitle);
 
                     if (matches.length > 0) {
                         const myKey = [i, ...matches.map(x => x.item.id)];
